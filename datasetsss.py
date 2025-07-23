@@ -31,11 +31,11 @@ class MyDataset(Dataset):
         self.audio_feats = self.audio_feats.astype(np.float32)
         
     def __len__(self):
-        return self.audio_feats.shape[0] if self.audio_feats[0]<len(self.img_path_list) else len(self.img_path_list)
-    
-    def get_audio_features(self, features, index):  # 在当前音频帧前后各取4帧音频特征
-        left = index - 4
-        right = index + 4
+        return self.audio_feats.shape[0] if (self.audio_feats.shape[0]<len(self.img_path_list)) else len(self.img_path_list)
+
+    def get_audio_features(self, features, index): 
+        left = index - 8
+        right = index + 8
         pad_left = 0
         pad_right = 0
         if left < 0:
@@ -120,7 +120,7 @@ class MyDataset(Dataset):
         if self.mode == "wenet":
             audio_feat = audio_feat.reshape(128,16,32)
         if self.mode == "hubert":
-            audio_feat = audio_feat.reshape(16,32,32)  ## 这个地方的16 / 128跟合并起来的音频特征帧数有关
+            audio_feat = audio_feat.reshape(32,32,32) 
         
         return img_concat_T, img_real_T, audio_feat
     
